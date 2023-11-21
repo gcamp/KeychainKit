@@ -17,9 +17,6 @@ struct KeychainTool: ParsableCommand {
     static var configuration: CommandConfiguration {
         return CommandConfiguration(commandName: String(describing: Self.self))
     }
-    
-    @Flag(name: .shortAndLong, help: "Show only synchronizable items.")
-    var synchronizable: Bool
 
     @Option(name: .shortAndLong, help: "Label.")
     var label: String?
@@ -33,13 +30,10 @@ struct KeychainTool: ParsableCommand {
     @Option(name: .shortAndLong, help: "Token identifier.")
     var tokenIdentifier: String?
 
-    @Flag(name: .shortAndLong, help: "Verbose mode.")
-    var verbose: Bool
-
     func run() throws {
         do {
             Logger.logMode = .commandLine
-            Logger.logLevel = self.verbose ? .debug : .info
+            Logger.logLevel = .debug
 
             try CodeSign.signMainExecutableOnceAndRun()
             
@@ -47,7 +41,7 @@ struct KeychainTool: ParsableCommand {
                 label: self.label,
                 accessGroup: self.accessGroup,
                 service: self.service,
-                synchronizable: self.synchronizable ? true : nil,
+                synchronizable: nil,
                 tokenID: self.tokenIdentifier)
             
             Logger.log(important: "Keychain Items Matched: \(keychainItems.count)")
